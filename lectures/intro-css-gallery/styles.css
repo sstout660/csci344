@@ -1,0 +1,39 @@
+body {
+    font-family: Arial, Helvetica, sans-serif;
+     
+}
+
+header {
+    background-color: rgb(255, 212, 42);
+    padding: 40px;
+    /* border-width: 100%; */
+}
+
+main {
+    background-color: rgb(247, 247, 247);
+    display: grid;
+    grid-template-columns: 33% 33% 33%;
+    padding:40px;
+    gap:30px;
+}
+
+section {
+    background-color: white;
+    /* width:59%; */
+}
+
+p {
+    padding:10px;
+}
+
+img {
+    width:100%;
+}
+
+
+
+/* Temp */
+
+/* Temp */
+
+/* Your code here */
