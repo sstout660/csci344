@@ -9,4 +9,43 @@ body * {
 body {
     font-family: Arial, Helvetica, sans-serif;
     margin: 0;
+
+}
+
+nav {
+    display: flex;
+    position:fixed;
+    width:100%;
+    padding:10px;
+    border-style: solid;
+}
+
+nav h1 {
+    display: flex;
+    justify-content: left;
+    padding: 10px;
+    border-style: solid;
+}
+
+
+ul {
+    display:flex;
+    justify-content: right;
+    border-style: solid;
+    padding:10px;
+    margin-left: 70%;
+    list-style: none;
+}
+
+ul * {
+     display:flex;
+    justify-content: right;
+    border-style: solid;
+    padding:5px;
+    list-style: none;
+}
+
+nav a {
+    text-decoration: none;
+    color: black;
 }

@@ -12,3 +12,19 @@ body {
 }
 
 /* create additional rules below:  */
+
+section {
+    display: flex;
+    height: 100vh;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+#home {
+    background-color: aquamarine;
+}
+
+#portfolio {
+    background-color: rgb(209, 255, 240);
+}

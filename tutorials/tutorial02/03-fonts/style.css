@@ -1,5 +1,6 @@
 /* Make sure that your @import statement is at the top of your CSS file  */
-
+@import url('https://fonts.googleapis.com/css2?family=Playwrite+IN+Guides&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Playwrite+IN+Guides&display=swap');
 
 html {
     scroll-behavior: smooth;
@@ -12,4 +13,12 @@ body * {
 body {
     font-family: Arial, Helvetica, sans-serif;
     margin: 0;
+}
+
+h1, h2 {
+    font-family: "Playwrite IN Guides", cursive;
+}
+
+p {
+    font-family: "Bebas Neue", sans-serif;
 }
