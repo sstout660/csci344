@@ -1,0 +1,59 @@
+body {
+    background-color: rgb(49, 70, 130);
+    color:white;
+}
+
+.grid-container {
+    display:grid;
+    grid-template-columns: 1fr 2fr 1fr;
+    grid-template-rows: 20vh 60vh 20vh;
+    padding: 20px;
+    gap:20px;
+}
+
+.grid-container > * , .grid-container{
+    border: solid 2px rgb(103, 103, 103);
+    border-radius: 20px;
+}
+
+
+
+.header {
+    grid-column: 1 / 4;
+    text-align:left;
+}
+
+.nav {
+    /* grid-row: 2; */
+    text-align: center;
+}
+
+.main {
+    /* grid-row:2; */
+    text-align:center;
+}
+
+.aside {
+    /* grid-row:2; */
+    text-align:center;
+}
+
+.footer {
+    grid-row:3;
+    grid-column: 1/4;
+}
+
+
+/* When you neef mobile rules, you need a "media query" */
+@media screen and (max-width:600px) {
+    .grid-container {
+        grid-template-columns: 1fr;
+    }
+
+    .header, .footer {
+        grid-column: 1/2
+    }
+
+
+}
+/* ---------------------------------------------------- */
