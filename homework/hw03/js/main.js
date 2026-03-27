@@ -52,7 +52,7 @@ function postToHTML(post) {
                         <button><i class="far fa-paper-plane"></i></button>
                     </div>
                     <div>
-                        <button><i class="far fa-bookmark"></i></button>
+                        ${getBookmarkButton(post)}
                     </div>
                 </div>
                 <p class="font-bold mb-3">${post.likes.length} Likes</p>
@@ -97,6 +97,54 @@ function getComments(post) {
   //     render a "view all n comments" button
   //     render only the most recent comment underneath it
   // return the HTML string for whichever case applies
+}
+
+function getBookmarkButton(post) {
+  if (post.current_user_bookmark_id !== undefined) {
+    return `
+      <button onclick="unBookmark(${post.current_user_bookmark_id})">
+        <i class="fas fa-bookmark"></i>
+      </button>
+    `;
+  } else {
+    return `
+      <button onclick="bookmark(${post.id})">
+        <i class="far fa-bookmark"></i>
+      </button>`;
+  }
+}
+
+async function bookmark(postID) {
+  const endpoint = "/api/bookmarks/";
+
+  const postData = {
+    post_id: postID,
+  };
+
+  const response = await fetch(`${rootURL}/api/bookmarks/`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: "Bearer " + token,
+    },
+    body: JSON.stringify(postData),
+  });
+  const data = await response.json();
+  console.log(data);
+}
+
+async function unBookmark(bookmarkId) {
+  const endpoint = `${rootURL}/api/bookmarks/${bookmarkId}`;
+
+  const response = await fetch(endpoint, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: "Bearer " + token,
+    },
+  });
+  const data = await response.json();
+  console.log(data);
 }
 
 async function getToken() {
