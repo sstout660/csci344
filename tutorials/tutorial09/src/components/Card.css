@@ -1,0 +1,10 @@
+.card {
+    border-style: solid;
+    border-color: rgb(164, 164, 164);
+    border-radius: 10px;
+    width:fit-content;
+}
+
+.card h2, .card p {
+    padding: 5px;
+}
