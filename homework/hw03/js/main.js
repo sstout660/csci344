@@ -11,6 +11,9 @@ async function initializeScreen() {
   showNav();
   // invoke all of the Part 1 functions here
   showPosts();
+  showProfileHeader();
+  showSuggestions();
+  showStories();
 }
 
 // Fetch and display the posts:
@@ -26,7 +29,7 @@ async function showPosts() {
   });
   const posts = await response.json();
 
-  console.log(posts);
+  // console.log(posts);
 
   const postsEl = document.querySelector("#posts");
   posts.forEach((post) => {
@@ -47,7 +50,7 @@ function postToHTML(post) {
             <div class="p-4">
                 <div class="flex justify-between text-2xl mb-3">
                     <div>
-                        <button><i class="far fa-heart"></i></button>
+                        ${getLikeButton(post)}
                         <button><i class="far fa-comment"></i></button>
                         <button><i class="far fa-paper-plane"></i></button>
                     </div>
@@ -76,6 +79,59 @@ function postToHTML(post) {
         `;
 }
 
+function getLikeButton(post) {
+  if (post.current_user_like_id !== undefined) {
+    return `
+      <button aria-label="Unlike button" onclick="unLike(${post.current_user_like_id})">
+        <i class="fas fa-heart text-red-500"></i>
+      </button>
+    `;
+  } else {
+    return `
+      <button aria-label="Like button" onclick="like(${post.id})">
+        <i class="far fa-heart"></i>
+      </button>`;
+  }
+}
+
+async function like(postId) {
+  // build the /api/likes/ endpoint
+  const endpoint = "/api/likes/";
+
+  const postData = {
+    post_id: postId,
+  };
+  // issue a POST request with fetch(...)
+  const response = await fetch(`${rootURL}/api/likes/`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: "Bearer " + token,
+    },
+    body: JSON.stringify(postData),
+  });
+  const data = await response.json();
+
+  // include your bearer token in the Authorization header
+  // send the post id in the request body
+  // inspect the response JSON
+  // refresh or redraw the post after the request succeeds
+}
+
+async function unLike(likeId) {
+  // build the /api/likes/ endpoint
+  const endpoint = `${rootURL}/api/likes/${likeId}`;
+
+  const response = await fetch(endpoint, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: "Bearer " + token,
+    },
+  });
+  const data = await response.json();
+}
+
 function getComments(post) {
   if (post.comments.length == 0) {
     return "";
@@ -88,27 +144,31 @@ function getComments(post) {
         `;
   } else {
     return `
-    <button onclick="">view all </button>
+    <button class="text-blue-500 link">View all ${post.comments.length} comments</button>
+    <p class="text-sm mb-3">
+      <strong>${post.comments[0].user.username}</strong>
+        ${post.comments[0].text}
+    </p>
     `;
   }
   // if there are no comments, return an empty string
   // if there is exactly one comment, render just that comment
   // if there is more than one comment:
-  //     render a "view all n comments" button
-  //     render only the most recent comment underneath it
+  // render a "view all n comments" button
+  // render only the most recent comment underneath it
   // return the HTML string for whichever case applies
 }
 
 function getBookmarkButton(post) {
   if (post.current_user_bookmark_id !== undefined) {
     return `
-      <button onclick="unBookmark(${post.current_user_bookmark_id})">
+      <button aria-label="unBookmark button" onclick="unBookmark(${post.current_user_bookmark_id})">
         <i class="fas fa-bookmark"></i>
       </button>
     `;
   } else {
     return `
-      <button onclick="bookmark(${post.id})">
+      <button aria-label="Bookmark button" onclick="bookmark(${post.id})">
         <i class="far fa-bookmark"></i>
       </button>`;
   }
@@ -144,7 +204,6 @@ async function unBookmark(bookmarkId) {
     },
   });
   const data = await response.json();
-  console.log(data);
 }
 
 async function getToken() {
@@ -164,6 +223,90 @@ function showNav() {
 }
 
 // implement remaining functionality below:
+
+async function showProfileHeader() {
+  // fetch the current user's profile data from /api/profile
+  const response = await fetch(`${rootURL}/api/profile/`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: "Bearer " + token,
+    },
+  });
+  const data = await response.json();
+  // select the container where the profile header should go
+  const headerEl = document.querySelector("#profile-header");
+  // build an HTML string for the user's image + username
+  const html = `
+      <img src=${data.thumb_url} class="rounded-full w-16" />
+      <h2 class="font-Comfortaa font-bold text-2xl">${data.username}</h2>`;
+  // insert that HTML into the DOM
+  headerEl.insertAdjacentHTML("beforeend", html);
+}
+
+async function showSuggestions() {
+  // fetch the suggested accounts from /api/suggestions
+  const response = await fetch(`${rootURL}/api/suggestions/`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: "Bearer " + token,
+    },
+  });
+  const data = await response.json();
+  // console.log(data);
+  // select the container where the suggestions should go
+  const suggestionsEl = document.querySelector("#suggestions");
+  // loop through or map over the returned accounts
+  data.forEach((suggestion) => {
+    const HTML = suggestionToHTML(suggestion);
+    suggestionsEl.insertAdjacentHTML("beforeend", HTML);
+  });
+  // build an HTML string for each suggested account
+  // insert the combined HTML into the DOM
+}
+
+function suggestionToHTML(suggestion) {
+  return `<section class="flex justify-between items-center mb-4 gap-2">
+    <img src=${suggestion.thumb_url} class="rounded-full" />
+    <div class="w-[180px]">
+      <p class="font-bold text-sm">${suggestion.username}</p>
+      <p class="text-gray-500 text-xs">suggested for you</p>
+    </div>
+    <button class="text-blue-500 text-sm py-2">follow</button>
+  </section>`;
+}
+
+async function showStories() {
+  // fetch the stories from /api/stories
+  const response = await fetch(`${rootURL}/api/stories/`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: "Bearer " + token,
+    },
+  });
+  const data = await response.json();
+  console.log(data);
+  // select the stories container
+  const storiesEl = document.querySelector("#stories");
+  // loop through or map over the returned stories
+  // build an HTML string for each story
+  data.forEach((story) => {
+    const HTML = storyToHTML(story);
+    storiesEl.insertAdjacentHTML("beforeend", HTML);
+  });
+  // insert the combined HTML into the DOM
+}
+
+function storyToHTML(story) {
+  return `
+  <div class="flex flex-col justify-center items-center">
+    <img src=${story.user.thumb_url} class="rounded-full border-4 border-gray-300" />
+    <p class="text-xs text-gray-500">${story.user.username}</p>
+   </div>
+  `;
+}
 
 // after all of the functions are defined,
 // invoke initialize at the bottom:
